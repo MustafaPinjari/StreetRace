@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Section with Autoplay Audio</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home"><span>Home</span></a></li>
+                <li><a href="#select-car"><span>Select Car</span></a></li>
+                <li><a href="#order"><span>Order</span></a></li>
+                <li><a href="#race"><span>Race</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero section with background video and audio -->
+        <section id="hero">
+            <video autoplay muted loop id="bg-video">
+                <source src="/component/videos/Midnight Run.R34 GTR FD RX7 Evo and more Zhiyun Crane 3 Lab 4K.mp4" type="video/mp4">
+            </video>
+            <h1>Welcome to the Race...!! 🥶</h1>
+            <audio id="hero-audio" loop>
+                <source src="/component/audios/Tokyo-Drift.mp3" type="audio/mpeg">
+            </audio>
+        </section>
+
+        <!-- Car Selection Section -->
+        <section id="select-car">
+            <h2 class="select-car-heading">Select Your Car</h2>
+            
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
