@@ -10,8 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
         heroAudio.muted = false; // Ensure audio is not muted
         heroAudio.play().then(() => {
             console.log("Audio started playing successfully");
+            hasInteracted = true;
         }).catch(error => {
             console.error("Error playing audio:", error);
+            console.log("Waiting for user interaction...");
         });
     }
 
@@ -21,11 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Audio paused");
     }
 
-    // Play audio when user interacts with the page
+    // Attempt to play audio immediately
+    playAudio();
+
+    // Fallback: Play audio on first user interaction if it hasn't started yet
     document.body.addEventListener('click', function() {
-        console.log("User interaction detected");
         if (!hasInteracted) {
-            hasInteracted = true;
             playAudio();
         }
     }, { once: true });
@@ -37,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         if (hasInteracted) {
             if (heroVisible) {
-                playAudio();
+                heroAudio.play().catch(e => console.error("Error resuming audio:", e));
             } else {
                 pauseAudio();
             }
@@ -62,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Attempt to play audio as soon as it's loaded
     heroAudio.addEventListener('canplaythrough', function() {
         console.log("Audio can play through, attempting playback");
-        if (hasInteracted) {
+        if (!hasInteracted) {
             playAudio();
         }
     });
