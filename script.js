@@ -104,5 +104,5 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('scroll', handleScroll);
 
     // Initial audio control on page load
-    controlAudio(window.pageYOffset < window.innerHeight);
+    controlAudio(window.scrollY < window.innerHeight);
 });

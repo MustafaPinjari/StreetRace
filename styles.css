@@ -123,7 +123,6 @@ h1 {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: rgba(0, 0, 0, 0.8);
     position: fixed;
     width: 100%;
     top: 0;
@@ -146,14 +145,15 @@ h1 {
 .dropdown {
     position: relative;
     display: inline-block;
+    margin-right: 30px;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    min-width: 160px;
+    background-color: rgba(0, 0, 0, 0.096);
+    min-width: 130px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
@@ -181,6 +181,7 @@ h1 {
 
     .mobile-nav {
         display: flex;
+
     }
 
     nav ul {
