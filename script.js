@@ -1,86 +1,108 @@
 document.addEventListener("DOMContentLoaded", function () {
     const heroAudio = document.getElementById("hero-audio");
-    const heroSection = document.getElementById("hero");
-    let hasInteracted = false;
+    const currentPage = document.getElementById('current-page');
+    const links = document.querySelectorAll('.dropdown-content a');
+    
+    // Preload audio
+    heroAudio.preload = "auto";
+    
+    // Attempt to play audio immediately
+    function attemptAutoplay() {
+        heroAudio.volume = 0.1;  // Start with low volume
+        heroAudio.muted = false;
+        
+        let playPromise = heroAudio.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log("Autoplay started successfully");
+                // Gradually increase volume
+                let volumeIncrease = setInterval(() => {
+                    if (heroAudio.volume < 1) {
+                        heroAudio.volume += 0.1;
+                    } else {
+                        clearInterval(volumeIncrease);
+                    }
+                }, 1000);
+            }).catch(error => {
+                console.error("Autoplay was prevented:", error);
+                // Fallback to play on first interaction
+                document.body.addEventListener('click', playAudio, { once: true });
+                document.body.addEventListener('keydown', playAudio, { once: true });
+                document.body.addEventListener('touchstart', playAudio, { once: true });
+            });
+        }
+    }
 
-    // Function to play audio
     function playAudio() {
-        console.log("Attempting to play audio...");
-        heroAudio.volume = 1; // Ensure volume is at maximum
-        heroAudio.muted = false; // Ensure audio is not muted
+        heroAudio.volume = 1;
+        heroAudio.muted = false;
         heroAudio.play().then(() => {
-            console.log("Audio started playing successfully");
-            hasInteracted = true;
+            console.log("Audio started playing on user interaction");
         }).catch(error => {
             console.error("Error playing audio:", error);
-            console.log("Waiting for user interaction...");
         });
     }
 
-    // Function to pause audio
-    function pauseAudio() {
-        heroAudio.pause();
-        console.log("Audio paused");
+    attemptAutoplay();
+
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            currentPage.textContent = this.textContent;
+        });
+    });
+
+    // Function to control audio
+    function controlAudio(isHeroVisible) {
+        if (isHeroVisible) {
+            if (heroAudio.paused) {
+                playAudio();
+            }
+        } else {
+            heroAudio.pause();
+        }
     }
 
-    // Attempt to play audio immediately
-    playAudio();
-
-    // Fallback: Play audio on first user interaction if it hasn't started yet
-    document.body.addEventListener('click', function() {
-        if (!hasInteracted) {
-            playAudio();
-        }
-    }, { once: true });
-
-    // Pause audio when scrolled past hero section
-    window.addEventListener('scroll', throttle(function() {
-        const rect = heroSection.getBoundingClientRect();
-        const heroVisible = rect.top < window.innerHeight && rect.bottom >= 0;
-        
-        if (hasInteracted) {
-            if (heroVisible) {
-                heroAudio.play().catch(e => console.error("Error resuming audio:", e));
-            } else {
-                pauseAudio();
+    // Throttle function
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
             }
         }
-    }, 100));
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    // Log audio element details for debugging
-    console.log("Audio element:", heroAudio);
-    console.log("Audio source:", heroAudio.querySelector('source').src);
-    console.log("Audio ready state:", heroAudio.readyState);
-
-    // Attempt to play audio as soon as it's loaded
-    heroAudio.addEventListener('canplaythrough', function() {
-        console.log("Audio can play through, attempting playback");
-        if (!hasInteracted) {
-            playAudio();
-        }
-    });
-});
-
-// Throttle function (unchanged)
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
     }
-}
+
+    // Update current page on scroll and control audio
+    const handleScroll = throttle(function() {
+        const sections = document.querySelectorAll('section');
+        let currentSection = '';
+        let isHeroVisible = false;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                currentSection = section.getAttribute('id');
+                if (currentSection === 'home') {
+                    isHeroVisible = true;
+                }
+            }
+        });
+
+        if (currentSection) {
+            currentPage.textContent = document.querySelector(`.dropdown-content a[href="#${currentSection}"]`).textContent;
+        }
+
+        controlAudio(isHeroVisible);
+    }, 200);
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Initial audio control on page load
+    controlAudio(window.pageYOffset < window.innerHeight);
+});

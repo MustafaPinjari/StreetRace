@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero Section with Autoplay Audio</title>
+    <title>Street Race</title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
-        <nav>
+        <nav class="desktop-nav">
             <ul>
                 <li><a href="#home"><span>Home</span></a></li>
                 <li><a href="#select-car"><span>Select Car</span></a></li>
@@ -16,11 +17,22 @@
                 <li><a href="#race"><span>Race</span></a></li>
             </ul>
         </nav>
+        <nav class="mobile-nav">
+            <span id="current-page">Home</span>
+            <div class="dropdown">
+                <button class="dropbtn"><i class="fas fa-bars"></i></button>
+                <div class="dropdown-content">
+                    <a href="#home">Home</a>
+                    <a href="#select-car">Select Car</a>
+                    <a href="#order">Order</a>
+                    <a href="#race">Race</a>
+                </div>
+            </div>
+        </nav>
     </header>
-
     <main>
         <!-- Hero section with background video and audio -->
-        <section id="hero">
+        <section id="home">
             <video autoplay muted loop id="bg-video">
                 <source src="/component/videos/Midnight Run.R34 GTR FD RX7 Evo and more Zhiyun Crane 3 Lab 4K.mp4" type="video/mp4">
             </video>
@@ -29,14 +41,21 @@
                 <source src="/component/audios/Tokyo-Drift.mp3" type="audio/mpeg">
             </audio>
         </section>
-
         <!-- Car Selection Section -->
         <section id="select-car">
             <h2 class="select-car-heading">Select Your Car</h2>
-            
+        </section>
+        <!-- Order Section -->
+        <section id="order">
+            <h2>Order Your Car</h2>
+            <!-- Add order content here -->
+        </section>
+        <!-- Race Section -->
+        <section id="race">
+            <h2>Start Racing</h2>
+            <!-- Add race content here -->
         </section>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
